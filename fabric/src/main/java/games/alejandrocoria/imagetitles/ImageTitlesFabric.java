@@ -13,7 +13,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class ImageTitlesFabric implements ModInitializer {
-    
     @Override
     public void onInitialize() {
         ImageTitles.init();
@@ -21,12 +20,14 @@ public class ImageTitlesFabric implements ModInitializer {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SimpleResourceReloadListener() {
             @Override
             public ResourceLocation getFabricId() {
-                return ResourceLocation.fromNamespaceAndPath("imagetitles", "titles");
+                return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "titles_reload_listener");
             }
 
             @Override
-            public CompletableFuture<Void> load(ResourceManager resourceManager, Executor executor) {
+            public CompletableFuture<List<ResourceLocation>> load(ResourceManager resourceManager, Executor executor) {
                 return CompletableFuture.supplyAsync(() -> {
+                    ImageTitles.clearAllImages();
+
                     List<ResourceLocation> files = new ArrayList<>();
                     files.addAll(resourceManager.listResources("textures/title", path -> path.getPath().endsWith(".mcdata")).keySet());
                     ImageTitles.loadImageFiles(resourceManager, files);

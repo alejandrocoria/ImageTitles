@@ -17,13 +17,10 @@ import java.util.List;
 import java.util.Map;
 
 public class ImageTitles {
-    private static Map<String, ResourceLocation> images = new HashMap<>();
-    private static ResourceLocation current = null;
-    private static int width;
-    private static int height;
+    private static Map<String, TitleData> images = new HashMap<>();
+    private static TitleData current = null;
 
     public static void init() {
-        images.put("test", ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "textures/test.png"));
     }
 
     public static void loadImageFiles(ResourceManager manager, List<ResourceLocation> files) {
@@ -34,7 +31,7 @@ public class ImageTitles {
                 TitleJson titleJson = gson.fromJson(resource.openAsReader(), TitleJson.class);
                 ResourceLocation imagePath = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), location.getPath().replace(".mcdata", ".png"));
                 Minecraft.getInstance().getTextureManager().getTexture(imagePath);
-                images.put(titleJson.title, imagePath);
+                images.put(titleJson.title, new TitleData(imagePath, titleJson.x, titleJson.y, titleJson.width, titleJson.height));
             } catch (FileNotFoundException e) {
             } catch (IOException e) {
             }
@@ -43,9 +40,10 @@ public class ImageTitles {
 
     public static void setCurrent(Component title) {
         current = images.get(title.getString());
-        AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(current);
-        texture.getId();
+    }
 
+    public static void clearAllImages() {
+        images.clear();
     }
 
     public static boolean renderImage(GuiGraphics guiGraphics, int alpha) {
@@ -53,16 +51,44 @@ public class ImageTitles {
             return false;
         }
 
+        guiGraphics.pose().pushPose();
+
+        float guiScale = (float) Minecraft.getInstance().getWindow().getGuiScale();
+        guiGraphics.pose().scale(1.f / guiScale, 1.f / guiScale, 1.f);
+
         int color = 0xFFFFFF | (alpha << 24);
-        int width = 300;
-        int height = 300;
-        int x = (guiGraphics.guiWidth() - width) / 2;
-        int y = (guiGraphics.guiHeight() / 2 - height) / 2;
-        guiGraphics.blit(RenderType::guiTextured, current, x, y, 0, 0, width, height, width, height, color);
+        int width = current.width;
+        int height = current.height;
+        int x = (int) (guiGraphics.guiWidth() * guiScale * current.x - width / 2.f);
+        int y = (int) (guiGraphics.guiHeight() * guiScale * current.y - height / 2.f);
+        guiGraphics.blit(RenderType::guiTextured, current.texture, x, y, 0, 0, width, height, width, height, color);
+
+        guiGraphics.pose().popPose();
         return true;
     }
 
+
     static class TitleJson {
         String title;
+        float x = 0.5f;
+        float y = 0.25f;
+        int width;
+        int height;
+    }
+
+    static class TitleData {
+        public ResourceLocation texture;
+        float x;
+        float y;
+        public int width;
+        public int height;
+
+        public TitleData(ResourceLocation texture, float x, float y, int width, int height) {
+            this.texture = texture;
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+        }
     }
 }

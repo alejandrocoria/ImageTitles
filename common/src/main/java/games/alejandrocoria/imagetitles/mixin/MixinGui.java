@@ -27,7 +27,6 @@ public class MixinGui {
             method = "renderTitle",
             cancellable = true)
     private void renderTitle(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci, @Local int i) {
-        Constants.LOG.info("renderTitle: {}", i);
         boolean imageRendered = ImageTitles.renderImage(guiGraphics, i);
 
         if (imageRendered) {
