@@ -8,7 +8,6 @@ base {
 }
 mixin {
     config("${mod_id}.mixins.json")
-    config("${mod_id}.forge.mixins.json")
 }
 jar {
     manifest {
@@ -37,6 +36,7 @@ minecraft {
             workingDirectory file('runs/client')
             ideaModule "${rootProject.name}.${project.name}.main"
             taskName 'Client'
+            property "mixin.debug.export", "true"
             mods {
                 modClientRun {
                     source sourceSets.main
@@ -75,6 +75,8 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5"))
+    implementation("io.github.llamalad7:mixinextras-forge:0.3.5")
     // Forge's hack fix
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -12,6 +11,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +23,15 @@ public class ImageTitles {
     public static void init() {
     }
 
-    public static void loadImageFiles(ResourceManager manager, List<ResourceLocation> files) {
+    public static void loadImageFiles(ResourceManager resourceManager) {
+        clearAllImages();
+
+        List<ResourceLocation> files = new ArrayList<>(resourceManager.listResources("textures/title", path -> path.getPath().endsWith(".mcdata")).keySet());
+
         Gson gson = new Gson();
         for (ResourceLocation location : files) {
             try {
-                Resource resource = manager.getResourceOrThrow(location);
+                Resource resource = resourceManager.getResourceOrThrow(location);
                 TitleJson titleJson = gson.fromJson(resource.openAsReader(), TitleJson.class);
                 ResourceLocation imagePath = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), location.getPath().replace(".mcdata", ".png"));
                 Minecraft.getInstance().getTextureManager().getTexture(imagePath);

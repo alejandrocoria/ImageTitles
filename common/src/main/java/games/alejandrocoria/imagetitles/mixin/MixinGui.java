@@ -1,7 +1,6 @@
 package games.alejandrocoria.imagetitles.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import games.alejandrocoria.imagetitles.Constants;
 import games.alejandrocoria.imagetitles.ImageTitles;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
