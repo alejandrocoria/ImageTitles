@@ -1,6 +1,8 @@
 package games.alejandrocoria.imagetitles;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
@@ -36,8 +38,10 @@ public class ImageTitles {
                 ResourceLocation imagePath = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), location.getPath().replace(".mcdata", ".png"));
                 Minecraft.getInstance().getTextureManager().getTexture(imagePath);
                 images.put(titleJson.title, new TitleData(imagePath, titleJson.x, titleJson.y, titleJson.width, titleJson.height));
-            } catch (FileNotFoundException e) {
             } catch (IOException e) {
+                Constants.LOG.error("Error loading file \"{}\": {}", location, e);
+            } catch (JsonSyntaxException e) {
+                Constants.LOG.error("Error loading json data in file \"{}\": {}", location, e);
             }
         }
     }
