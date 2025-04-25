@@ -1,6 +1,8 @@
 plugins {
     id 'multiloader-loader'
     id 'fabric-loom'
+    id 'net.darkhax.curseforgegradle' version '1.+'
+    id "com.modrinth.minotaur" version "2.+"
 }
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
@@ -33,5 +35,61 @@ loom {
             ideConfigGenerated(true)
             runDir('runs/server')
         }
+    }
+}
+
+jar {
+    dependsOn "processDocs"
+}
+
+task processDocs(type: Copy) {
+    // update docs
+    from(file("../doc/")) {
+        include '*.md'
+        expand 'loaderversion': project.fabric_version,
+                'loadername': "Fabric API"
+    }
+    into 'build/doc'
+}
+
+if (!project.hasProperty("curseForgeApiKey")) {
+    ext.curseForgeApiKey = project.findProperty("curseforge_api_key") ?: "notset"
+}
+if (!project.hasProperty("modrinthApiKey")) {
+    ext.modrinthApiKey = project.findProperty("modrinth_api_key") ?: "notset"
+}
+
+task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    apiToken = "${curseForgeApiKey}"
+    def mainFile = upload(curseforge_project_id, remapJar)
+    mainFile.displayName = "${mod_name}-${minecraft_version}-${version}-fabric"
+    mainFile.releaseType = release_type
+    mainFile.addModLoader("Fabric", "Quilt")
+    mainFile.addJavaVersion("Java 21")
+    mainFile.addGameVersion("${project.minecraft_version}")
+    mainFile.addEnvironment("Client")
+    mainFile.changelogType = "markdown"
+    mainFile.changelog = file("$project.buildDir/doc/changelog.md")
+}
+
+tasks.modrinth.dependsOn(tasks.build)
+
+modrinth {
+//    debugMode.set(true)
+    token = "${modrinthApiKey}"
+    projectId = modrinth_project_id
+    versionNumber = "${minecraft_version}-${version}-fabric"
+    versionName = "${mod_name}-${minecraft_version}-${version}-fabric"
+    versionType = release_type
+    uploadFile = remapJar
+    gameVersions = ["${project.minecraft_version}"]
+    loaders = ["fabric", "quilt"]
+    changelog = file("$project.buildDir/doc/changelog.md").exists() ? file("$project.buildDir/doc/changelog.md").text : null
+}
+
+project.afterEvaluate {
+    project.tasks.findAll { task -> (task.name.startsWith('curseforge') || task.name.startsWith('modrinth'))
+    }.each {
+        projectTask -> projectTask.dependsOn build
     }
 }
