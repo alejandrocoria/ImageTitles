@@ -19,23 +19,24 @@ import java.util.List;
 import java.util.Map;
 
 public class ImageTitles {
-    private static Map<String, TitleData> images = new HashMap<>();
+    private static final Map<String, TitleData> images = new HashMap<>();
     private static TitleData current = null;
 
     public static void init() {
+        Constants.LOG.info("imageTitles init");
     }
 
     public static void loadImageFiles(ResourceManager resourceManager) {
         clearAllImages();
 
-        List<ResourceLocation> files = new ArrayList<>(resourceManager.listResources("textures/title", path -> path.getPath().endsWith(".mcdata")).keySet());
+        List<ResourceLocation> files = new ArrayList<>(resourceManager.listResources("textures/title", path -> path.getPath().endsWith(".png.mcdata")).keySet());
 
         Gson gson = new Gson();
         for (ResourceLocation location : files) {
             try {
                 Resource resource = resourceManager.getResourceOrThrow(location);
                 TitleJson titleJson = gson.fromJson(resource.openAsReader(), TitleJson.class);
-                ResourceLocation imagePath = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), location.getPath().replace(".mcdata", ".png"));
+                ResourceLocation imagePath = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), location.getPath().replace(".png.mcdata", ".png"));
                 Minecraft.getInstance().getTextureManager().getTexture(imagePath);
                 images.put(titleJson.title, new TitleData(imagePath, titleJson.x, titleJson.y, titleJson.width, titleJson.height));
             } catch (IOException e) {
