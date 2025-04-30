@@ -52,6 +52,7 @@ public class ImageTitles {
 
     public static void clearAllImages() {
         images.clear();
+        current = null;
     }
 
     public static boolean renderImage(GuiGraphics guiGraphics, int alpha) {
