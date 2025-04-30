@@ -37,7 +37,6 @@ public class ImageTitles {
                 Resource resource = resourceManager.getResourceOrThrow(location);
                 TitleJson titleJson = gson.fromJson(resource.openAsReader(), TitleJson.class);
                 ResourceLocation imagePath = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), location.getPath().replace(".png.mcdata", ".png"));
-                Minecraft.getInstance().getTextureManager().getTexture(imagePath);
                 images.put(titleJson.title, new TitleData(imagePath, titleJson.x, titleJson.y, titleJson.width, titleJson.height));
             } catch (IOException e) {
                 Constants.LOG.error("Error loading file \"{}\": {}", location, e);
