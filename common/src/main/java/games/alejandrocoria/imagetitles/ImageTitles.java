@@ -1,17 +1,22 @@
 package games.alejandrocoria.imagetitles;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.joml.Matrix4f;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,7 +75,18 @@ public class ImageTitles {
         int height = current.height;
         int x = (int) (guiGraphics.guiWidth() * guiScale * current.x - width / 2.f);
         int y = (int) (guiGraphics.guiHeight() * guiScale * current.y - height / 2.f);
-        guiGraphics.blit(RenderType::guiTextured, current.texture, x, y, 0, 0, width, height, width, height, color);
+
+        RenderSystem.setShaderTexture(0, current.texture);
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.enableBlend();
+        Matrix4f matrix4f = guiGraphics.pose().last().pose();
+        BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+        bufferbuilder.addVertex(matrix4f, x, y, 0).setUv(0, 0).setColor(color);
+        bufferbuilder.addVertex(matrix4f, x, y + height, 0).setUv(0, 1).setColor(color);
+        bufferbuilder.addVertex(matrix4f, x + width, y + height, 0).setUv(1, 1).setColor(color);
+        bufferbuilder.addVertex(matrix4f, x + width, y, 0).setUv(1, 0).setColor(color);
+        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        RenderSystem.disableBlend();
 
         guiGraphics.pose().popPose();
         return true;

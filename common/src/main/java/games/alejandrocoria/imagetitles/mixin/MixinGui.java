@@ -3,10 +3,10 @@ package games.alejandrocoria.imagetitles.mixin;
 import com.llamalad7.mixinextras.sugar.Local;
 import games.alejandrocoria.imagetitles.ImageTitles;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.profiling.Profiler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -30,7 +30,7 @@ public class MixinGui {
 
         if (imageRendered) {
             ci.cancel();
-            Profiler.get().pop();
+            Minecraft.getInstance().getProfiler().pop();
         }
     }
 }
