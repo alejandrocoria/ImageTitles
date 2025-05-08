@@ -1,9 +1,8 @@
 package games.alejandrocoria.imagetitles.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import games.alejandrocoria.imagetitles.ImageTitles;
-import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -22,15 +21,14 @@ public class MixinGui {
 
     @Inject(at = @At(value = "INVOKE",
                     target="Lnet/minecraft/util/Mth;clamp(III)I",
-                    shift = At.Shift.AFTER),
-            method = "renderTitle",
-            cancellable = true)
-    private void renderTitle(GuiGraphics guiGraphics, DeltaTracker deltaTracker, CallbackInfo ci, @Local int i) {
-        boolean imageRendered = ImageTitles.renderImage(guiGraphics, i);
+                    shift = At.Shift.BY,
+                    by = 2),
+            method = "render")
+    private void render(GuiGraphics guiGraphics, float partialTick, CallbackInfo ci, @Local(ordinal = 0) LocalIntRef i) {
+        boolean imageRendered = ImageTitles.renderImage(guiGraphics, i.get());
 
         if (imageRendered) {
-            ci.cancel();
-            Minecraft.getInstance().getProfiler().pop();
+            i.set(0);
         }
     }
 }

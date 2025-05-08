@@ -41,7 +41,7 @@ public class ImageTitles {
             try {
                 Resource resource = resourceManager.getResourceOrThrow(location);
                 TitleJson titleJson = gson.fromJson(resource.openAsReader(), TitleJson.class);
-                ResourceLocation imagePath = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), location.getPath().replace(".png.mcdata", ".png"));
+                ResourceLocation imagePath = ResourceLocation.tryBuild(location.getNamespace(), location.getPath().replace(".png.mcdata", ".png"));
                 images.put(titleJson.title, new TitleData(imagePath, titleJson.x, titleJson.y, titleJson.width, titleJson.height));
             } catch (IOException e) {
                 Constants.LOG.error("Error loading file \"{}\": {}", location, e);
@@ -77,15 +77,16 @@ public class ImageTitles {
         int y = (int) (guiGraphics.guiHeight() * guiScale * current.y - height / 2.f);
 
         RenderSystem.setShaderTexture(0, current.texture);
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
         RenderSystem.enableBlend();
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
-        BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-        bufferbuilder.addVertex(matrix4f, x, y, 0).setUv(0, 0).setColor(color);
-        bufferbuilder.addVertex(matrix4f, x, y + height, 0).setUv(0, 1).setColor(color);
-        bufferbuilder.addVertex(matrix4f, x + width, y + height, 0).setUv(1, 1).setColor(color);
-        bufferbuilder.addVertex(matrix4f, x + width, y, 0).setUv(1, 0).setColor(color);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
+        bufferbuilder.vertex(matrix4f, x, y, 0).color(color).uv(0, 0).endVertex();
+        bufferbuilder.vertex(matrix4f, x, y + height, 0).color(color).uv(0, 1).endVertex();
+        bufferbuilder.vertex(matrix4f, x + width, y + height, 0).color(color).uv(1, 1).endVertex();
+        bufferbuilder.vertex(matrix4f, x + width, y, 0).color(color).uv(1, 0).endVertex();
+        BufferUploader.drawWithShader(bufferbuilder.end());
         RenderSystem.disableBlend();
 
         guiGraphics.pose().popPose();

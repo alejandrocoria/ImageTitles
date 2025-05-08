@@ -19,7 +19,7 @@ public class ImageTitlesFabric implements ModInitializer {
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new SimpleResourceReloadListener<>() {
             @Override
             public ResourceLocation getFabricId() {
-                return ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "titles_reload_listener");
+                return ResourceLocation.tryBuild(Constants.MOD_ID, "titles_reload_listener");
             }
 
             @Override

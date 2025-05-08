@@ -26,6 +26,7 @@ loom {
         client {
             client()
             setConfigName('Fabric Client')
+            property("mixin.debug.export", "true")
             ideConfigGenerated(true)
             runDir('runs/client')
         }
