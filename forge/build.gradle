@@ -11,11 +11,6 @@ mixin {
     add(sourceSets.main, "${mod_id}.refmap.json")
     config("${mod_id}.mixins.json")
 }
-jar {
-    manifest {
-        attributes["MixinConfigs"] = "${mod_id}.mixins.json"
-    }
-}
 
 legacyForge {
     version = "${minecraft_version}-${forge_version}"
@@ -56,8 +51,9 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5"))
-//    implementation("io.github.llamalad7:mixinextras-forge:0.3.5")
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+//    implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
+//    implementation("io.github.llamalad7:mixinextras-forge:0.4.1")
     implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.3.5"))
     // Forge's hack fix
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
@@ -71,6 +67,9 @@ sourceSets.each {
 
 jar {
     finalizedBy('reobfJar')
+    manifest.attributes([
+            "MixinConfigs": "${mod_id}.mixins.json"
+    ])
     dependsOn "processDocs"
 }
 
