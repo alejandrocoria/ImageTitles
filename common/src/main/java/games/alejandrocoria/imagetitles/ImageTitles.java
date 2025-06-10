@@ -5,6 +5,7 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -60,19 +61,19 @@ public class ImageTitles {
             return false;
         }
 
-        guiGraphics.pose().pushPose();
+        guiGraphics.pose().pushMatrix();
 
         float guiScale = (float) Minecraft.getInstance().getWindow().getGuiScale();
-        guiGraphics.pose().scale(1.f / guiScale, 1.f / guiScale, 1.f);
+        guiGraphics.pose().scale(1.f / guiScale, 1.f / guiScale);
 
         int color = 0xFFFFFF | (alpha << 24);
         int width = current.width;
         int height = current.height;
         int x = (int) (guiGraphics.guiWidth() * guiScale * current.x - width / 2.f);
         int y = (int) (guiGraphics.guiHeight() * guiScale * current.y - height / 2.f);
-        guiGraphics.blit(RenderType::guiTextured, current.texture, x, y, 0, 0, width, height, width, height, color);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, current.texture, x, y, 0, 0, width, height, width, height, color);
 
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
         return true;
     }
 
