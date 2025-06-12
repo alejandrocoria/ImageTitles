@@ -30,6 +30,7 @@ legacyForge {
         client {
             client()
             jvmArgument("-Dmixin.debug.export=true")
+            gameDirectory = project.file('runs/client')
         }
         data {
             data()
@@ -37,6 +38,7 @@ legacyForge {
         }
         server {
             server()
+            gameDirectory = project.file('runs/server')
         }
     }
 
