@@ -17,6 +17,9 @@
     "entrypoints": {
         "main": [
           "games.alejandrocoria.imagetitles.ImageTitlesFabric"
+        ],
+        "client": [
+            "games.alejandrocoria.imagetitles.client.ImageTitlesClientFabric"
         ]
     },
     "mixins": [
