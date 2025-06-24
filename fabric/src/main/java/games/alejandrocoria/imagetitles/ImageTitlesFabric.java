@@ -1,8 +1,10 @@
 package games.alejandrocoria.imagetitles;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleResourceReloadListener;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -32,6 +34,12 @@ public class ImageTitlesFabric implements ModInitializer {
             @Override
             public CompletableFuture<Void> apply(Object data, ResourceManager manager, Executor executor) {
                 return CompletableFuture.supplyAsync(() -> null);
+            }
+        });
+
+        ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+            if (entity == Minecraft.getInstance().player) {
+                ImageTitles.announceDeprecated();
             }
         });
     }
