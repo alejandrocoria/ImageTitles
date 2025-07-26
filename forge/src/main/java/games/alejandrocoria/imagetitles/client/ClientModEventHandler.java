@@ -17,17 +17,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ClientModEventHandler {
     @SubscribeEvent
     public static void registerClientReloadListenersEvent(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(new SimplePreparableReloadListener<>() {
-            @Override
-            protected Object prepare(ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-                ImageTitles.loadImageFiles(resourceManager);
-                return null;
-            }
+        event.registerReloadListener(new ReloadListener());
+    }
 
-            @Override
-            protected void apply(Object o, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
+    public static class ReloadListener extends SimplePreparableReloadListener<Object> {
+        @Override
+        protected Object prepare(ResourceManager resourceManager, ProfilerFiller profilerFiller) {
+            ImageTitles.loadImageFiles(resourceManager);
+            return null;
+        }
 
-            }
-        });
+        @Override
+        protected void apply(Object o, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
+
+        }
     }
 }
