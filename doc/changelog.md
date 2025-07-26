@@ -1,3 +1,7 @@
+**1.1.0p2:**
+
+[Forge] Fixed: crash caused by publishing tasks sending the wrong jar.
+
 **1.1.0p1:**
 
 [Forge] Fixed: crash when game starts.
