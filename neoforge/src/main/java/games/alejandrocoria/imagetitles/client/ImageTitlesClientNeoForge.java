@@ -10,5 +10,6 @@ public class ImageTitlesClientNeoForge {
         ImageTitles.init();
 
         NeoForge.EVENT_BUS.addListener(ClientNeoForgeEventHandler::entityJoinLevelEvent);
+        NeoForge.EVENT_BUS.addListener(ClientNeoForgeEventHandler::onClientTick);
     }
 }

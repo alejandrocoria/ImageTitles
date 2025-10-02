@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -71,7 +70,6 @@ public class ImageTitles {
             needAnnounceDeprecated = true;
             Constants.LOG.warn("Resources with metadata in .mcdata files were detected. This is deprecated; please upgrade to version 2: https://github.com/alejandrocoria/ImageTitles-Example");
             Constants.LOG.warn("Resources: {}", v1Resources);
-            announceDeprecated();
         }
     }
 
