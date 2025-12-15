@@ -2,9 +2,9 @@ package games.alejandrocoria.imagetitles;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.mojang.logging.annotations.MethodsReturnNonnullByDefault;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.metadata.MetadataSectionType;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -39,15 +39,15 @@ public class ImageTitles {
     public static void loadImageFiles(ResourceManager resourceManager) {
         clearAllImages();
 
-        List<ResourceLocation> files = new ArrayList<>(resourceManager.listResources("textures/title",
+        List<Identifier> files = new ArrayList<>(resourceManager.listResources("textures/title",
                 path -> path.getPath().endsWith(EXTENSION_V1) || path.getPath().endsWith(".png")).keySet());
 
-        List<ResourceLocation> v1Resources = new ArrayList<>();
+        List<Identifier> v1Resources = new ArrayList<>();
         Gson gson = new Gson();
-        for (ResourceLocation location : files) {
+        for (Identifier location : files) {
             try {
                 Resource resource = resourceManager.getResourceOrThrow(location);
-                ResourceLocation imagePath = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), location.getPath().replace(EXTENSION_V1, ".png"));
+                Identifier imagePath = Identifier.fromNamespaceAndPath(location.getNamespace(), location.getPath().replace(EXTENSION_V1, ".png"));
 
                 if (location.getPath().endsWith(EXTENSION_V1)) {
                     TitleJson titleJson = gson.fromJson(resource.openAsReader(), TitleJson.class);
@@ -130,13 +130,13 @@ public class ImageTitles {
     }
 
     static class TitleData {
-        public ResourceLocation texture;
+        public Identifier texture;
         float x;
         float y;
         public int width;
         public int height;
 
-        public TitleData(ResourceLocation texture, float x, float y, int width, int height) {
+        public TitleData(Identifier texture, float x, float y, int width, int height) {
             this.texture = texture;
             this.x = x;
             this.y = y;

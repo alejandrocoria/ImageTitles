@@ -2,7 +2,7 @@ package games.alejandrocoria.imagetitles.client;
 
 import games.alejandrocoria.imagetitles.Constants;
 import games.alejandrocoria.imagetitles.ImageTitles;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -14,7 +14,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ClientModEventHandler {
     public static void registerClientReloadListenersEvent(AddClientReloadListenersEvent event) {
         event.addListener(
-                ResourceLocation.fromNamespaceAndPath(Constants.MOD_ID, "titles_reload_listener"),
+                Identifier.fromNamespaceAndPath(Constants.MOD_ID, "titles_reload_listener"),
                 new SimplePreparableReloadListener<>() {
             @Override
             protected Object prepare(ResourceManager resourceManager, ProfilerFiller profilerFiller) {
