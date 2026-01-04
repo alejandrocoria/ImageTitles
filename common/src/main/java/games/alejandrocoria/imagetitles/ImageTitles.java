@@ -31,6 +31,8 @@ public class ImageTitles {
     private static final Map<String, TitleData> images = new HashMap<>();
     private static TitleData current = null;
     private static boolean needAnnounceDeprecated = false;
+    private static final int REF_WIDTH = 1920;
+    private static final int REF_HEIGHT = 1080;
 
     public static void init() {
         Constants.LOG.info("imageTitles init");
@@ -110,8 +112,12 @@ public class ImageTitles {
         guiGraphics.pose().scale(1.f / guiScale, 1.f / guiScale);
 
         int color = 0xFFFFFF | (alpha << 24);
-        int width = current.width;
-        int height = current.height;
+        float scaleX = (float) Minecraft.getInstance().getWindow().getScreenWidth() / REF_WIDTH;
+        float scaleY = (float) Minecraft.getInstance().getWindow().getScreenHeight() / REF_HEIGHT;
+        float scale = Math.min(scaleX, scaleY);
+
+        int width = Math.round(current.width * scale);
+        int height = Math.round(current.height * scale);
         int x = (int) (guiGraphics.guiWidth() * guiScale * current.x - width / 2.f);
         int y = (int) (guiGraphics.guiHeight() * guiScale * current.y - height / 2.f);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, current.texture, x, y, 0, 0, width, height, width, height, color);
