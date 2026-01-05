@@ -1,9 +1,5 @@
-Metadata has been moved to .mcmeta files with a different format (https://github.com/alejandrocoria/ImageTitles-Example).
-
-The previous format is still supported in this version, but probably not in the next.
+Images now scale with resolution so they don't appear too small at high resolutions or too large at low resolutions. Thanks to flaulox for the contribution.
  
-
-* [Forge] Fixed: Mixin error.
  
 **Requirements:**
 * ${loadername}: ${loaderversion}
