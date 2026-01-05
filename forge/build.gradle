@@ -10,7 +10,7 @@ base {
 }
 jarJar.enable()
 tasks.jarJar.configure {
-    archiveClassifier.set('forge')
+    archiveClassifier.set("")
 }
 
 tasks.named("build").configure {
