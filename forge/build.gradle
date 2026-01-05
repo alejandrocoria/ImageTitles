@@ -8,12 +8,20 @@ plugins {
 base {
     archivesName = "${mod_name}-forge-${minecraft_version}"
 }
+jarJar.enable()
+tasks.jarJar.configure {
+    archiveClassifier.set('forge')
+}
+
+tasks.named("build").configure {
+    dependsOn("jarJar")
+}
 mixin {
     config("${mod_id}.mixins.json")
 }
 jar {
     manifest {
-        attributes["MixinConfigs"] = "${mod_id}.mixins.json,${mod_id}.forge.mixins.json"
+        attributes["MixinConfigs"] = "${mod_id}.mixins.json"
     }
 }
 
@@ -77,8 +85,11 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5"))
-    implementation("io.github.llamalad7:mixinextras-forge:0.3.5")
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.2"))
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.5.2")) {
+        jarJar.ranged(it, "[0.5.2,)")
+    }
+
     // Forge's hack fix
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
